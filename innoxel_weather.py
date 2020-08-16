@@ -43,7 +43,11 @@ class WeatherStation:
         }
         url = self.ip + ':' + self.port + '/control'
 
-        response = requests.request("POST", url, headers=headers, data=payload, auth=HTTPDigestAuth('SOAP', 'soap'))
+        response = requests.request(method="POST",
+                                    url=url,
+                                    headers=headers,
+                                    data=payload,
+                                    auth=HTTPDigestAuth(self.username, self.password))
         result = xmltodict.parse(response.content)
         return result
 
@@ -66,13 +70,13 @@ class WeatherStation:
 
         json_body = [
             {
-                "measurement" : "innoxel_weather_station",
+                "measurement": "innoxel_weather_station",
                 "location": "Neuendorf",
-                "tags" : {
-                    "host" : "Innoxel",
-                    "Region" : "Neuendorf"
+                "tags": {
+                    "host": "Innoxel",
+                    "Region": "Neuendorf"
                 },
-                "time" : datetime.datetime.utcnow().isoformat(),
+                "time": datetime.datetime.utcnow().isoformat(),
                 "fields": {
                     'temperatureAir': float(measurement_dict['temperatureAir']),
                      'temperatureAirFelt': float(measurement_dict['temperatureAirFelt']),
@@ -104,69 +108,6 @@ ws = WeatherStation(ip=config.ip,
 
 ws_measurement = ws.get_weather_from_innoxel()
 ws_parsed_dict = ws.parse_weather_station_measurement(ws_measurement)
-# print(ws_parsed_dict)
-success = ws.write_to_influx(ws_parsed_dict)
+ws.write_to_influx(ws_parsed_dict)
 
-
-
-
-
-#
-# url = "http://192.168.2.172:5001/control"
-#
-# payload = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">\r\n    <s:Body>\r\n        <u:getState xmlns:u=\"urn:innoxel-ch:service:noxnetRemote:1\">\r\n            <u:bootId />\r\n            <u:stateId />\r\n            <u:moduleList>\r\n                <u:module class=\"masterWeatherModule\" index=\"-1\">\r\n                </u:module>\r\n            </u:moduleList>\r\n        </u:getState>\r\n    </s:Body>\r\n</s:Envelope>"
-# headers = {
-#   'Content-Type': 'text/xml',
-#   'SOAPACTION': 'urn:innoxel-ch:service:noxnetRemote:1#getState'
-# }
-#
-# response = requests.request("POST", url, headers=headers, data = payload, auth=HTTPDigestAuth('SOAP', 'soap'))
-#
-# xmlresponse=BeautifulSoup(response.content, features="html.parser")
-#
-# """
-# <?xml version="1.0"?>
-# <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-#     <s:Body>
-#         <u:getStateResponse xmlns:u="urn:innoxel-ch:service:noxnetRemote:1">
-#             <u:bootId>usid:39F70038A932:00000000</u:bootId>
-#             <u:stateId>usid:39F70044832F:00000F18:0000032F:00000000:0000004A</u:stateId>
-#             <u:moduleList>
-#                 <u:module class="masterWeatherModule" index="0" state="undefined">
-#                     <u:temperatureAir unit="°C" value="27.3" />
-#                     <u:temperatureAirFelt unit="°C" value="27.3" />
-#                     <u:windSpeed unit="m/s" value="0.2" />
-#                     <u:sunBrightnessEast unit="Lux" value="14000" />
-#                     <u:sunBrightnessSouth unit="Lux" value="27000" />
-#                     <u:sunBrightnessWest unit="Lux" value="51000" />
-#                     <u:sunTwilight unit="Lux" value="249" isCivilTwilight="no" />
-#                     <u:precipitation unit="-" value="dry" />
-#                 </u:module>
-#             </u:moduleList>
-#         </u:getStateResponse>
-#     </s:Body>
-# </s:Envelope>
-# """
-# result = xmltodict.parse(response.content)
-# module = result['s:Envelope']['s:Body']['u:getStateResponse']['u:moduleList']['u:module']
-# print(module)
-#
-# newDict = dict()
-# for k, v in module.items():
-#     # print(k, v)
-#     if str(k).startswith('u:'):
-#         newDict[k[2:]] = result['s:Envelope']['s:Body']['u:getStateResponse']['u:moduleList']['u:module'][k]['@value']
-#
-# print(newDict)
-#
-# # d2 = {k:v for k,v in filter(lambda t: t[0:1] is 'u:', module.items())}
-# # print(d2)
-# # weatherstation = dict()
-# # innoxel_outside_temperature = result['s:Envelope']['s:Body']['u:getStateResponse']['u:moduleList']['u:module']['u:temperatureAir']['@value']
-# # innoxel_wind_speed = result['s:Envelope']['s:Body']['u:getStateResponse']['u:moduleList']['u:module']['u:windSpeed']['@value']
-# #
-# # print(innoxel_outside_temperature)
-#
-# # print(response.text.encode('utf8'))
-#
 
