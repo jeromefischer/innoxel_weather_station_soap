@@ -43,6 +43,7 @@ db_name = 'innoxel'
 
 # Heatpump
 heatpump_db_name = 'heatpump'
+heatpump_pw = '99999'
 heatpump_url = "http://192.168.2.223/Webserver/index.html"
 # TEMPERATUREN: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[00]
 # 01: Vorlauf

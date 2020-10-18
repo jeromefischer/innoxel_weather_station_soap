@@ -11,6 +11,10 @@ import selenium
 from selenium.webdriver.common.keys import Keys
 
 
+# requires chromium-chromedriver_65.0.3325.181-0ubuntu0.14.04.1_armhf.deb
+# download from here: https://launchpad.net/ubuntu/trusty/armhf/chromium-chromedriver/65.0.3325.181-0ubuntu0.14.04.1
+
+
 def generate_json(data):
 
     json_body = [
@@ -31,10 +35,11 @@ def generate_json(data):
 
 class Heatpump():
 
-    def __init__(self, url, heatpump_data_points, db_ip, db_port, db_name):
+    def __init__(self, url, heatpump_data_points, heatpump_pw, db_ip, db_port, db_name):
 
         self.url = url
         self.heatpump_data_points = heatpump_data_points
+        self.heatpump_pw = heatpump_pw
         self.db_ip = db_ip
         self.db_port = db_port
         self.db_name = db_name
@@ -46,8 +51,8 @@ class Heatpump():
         driver = selenium.webdriver.Chrome(options=chrome_options,
                                            executable_path='/usr/lib/chromium-browser/chromedriver')
         driver.get(self.url)
-        search_box = driver.find_element_by_id(("password_prompt_input"))
-        search_box.send_keys('99999')
+        search_box = driver.find_element_by_id("password_prompt_input")
+        search_box.send_keys(self.heatpump_pw)
         search_box.send_keys(Keys.RETURN)
         nav = driver.find_element_by_xpath("/html/body/nav/ul/li/a")
         nav.click()
@@ -111,6 +116,7 @@ class Heatpump():
 
 hp = Heatpump(url=config.heatpump_url,
               heatpump_data_points=config.heatpump_data_points,
+              heatpump_pw=config.heatpump_pw,
               db_ip=config.db_ip,
               db_port=config.db_port,
               db_name=config.heatpump_db_name)
