@@ -1,11 +1,14 @@
 #! /usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import datetime
 import time
 import config
 from idna import unicode
 from influxdb import InfluxDBClient
-from webbot import Browser
 from bs4 import BeautifulSoup
+import selenium
+from selenium.webdriver.common.keys import Keys
 
 
 def generate_json(data):
@@ -37,16 +40,20 @@ class Heatpump():
         self.db_name = db_name
 
     def get_measurements_from_heatpump(self):
-
-        web = Browser(showWindow=False) # this will navigate python to browser. if showWindow = False, it is executed headless
-        link = web.go_to(self.url)
-        id = web.type('99999', into='password_prompt_input', id='password_prompt_input')
-        next = web.click('OK', tag='span')
-        time.sleep(0.05)
-        nav = web.click('Informationen', tag='span')
-        time.sleep(0.05)
-        r = web.get_page_source()
-        web.close_current_tab()
+        
+        chrome_options = selenium.webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        driver = selenium.webdriver.Chrome(options=chrome_options,
+                                           executable_path='/usr/lib/chromium-browser/chromedriver')
+        driver.get(self.url)
+        search_box = driver.find_element_by_id(("password_prompt_input"))
+        search_box.send_keys('99999')
+        search_box.send_keys(Keys.RETURN)
+        nav = driver.find_element_by_xpath("/html/body/nav/ul/li/a")
+        nav.click()
+        time.sleep(0.5)
+        r = driver.page_source
+        driver.quit()
         return r
 
     def parse_measurement(self, measurement_data):
@@ -73,6 +80,8 @@ class Heatpump():
         # check if current status is "Heizen".
         # If so, create new data point "Leistung Heizen" and write value.
         # If it is "Warmwasser", create new data point "Leistung Warmwasser" and write value
+        data['Leistung Heizen'] = float(0)
+        data['Leistung WW']  = float(0)
         if data['Betriebszustand'] == 'Heizen':
             data['Leistung Heizen'] = data['Leistung Ist']
         elif data['Betriebszustand'] == 'WW':
@@ -81,8 +90,8 @@ class Heatpump():
         del data['Leistung Ist']
         del data['Betriebszustand']
 
-         # since we now have only integers in the data dict as values, we can convert all values to float (required to have
-        # for influxDB
+        # since we now have only integers in the data dict as values, we can convert all values to float
+        # (required to have for influxDB
         for m, n in data.items():
             data[m] = float(data[m])
 

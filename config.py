@@ -1,33 +1,37 @@
+#! /usr/bin/python3
+# -*- coding: iso-8859-15 -*-
+
 # Innoxel Weather Station Configuration
+
 ip = 'http://192.168.2.172'
 port = '5001'
 username = 'SOAP'
 password = 'soap'
 
-dict_room_temperature = {'UG - WaschkÃ¼che': 16,
+dict_room_temperature = {'UG - Waschküche': 16,
                          'UG - Vorplatz': 20,
                          'EG - WC': 34,
-                         'EG - KÃ¼che': 36,
+                         'EG - Küche': 36,
                          'EG - Wohnen': 48,
                          'OG - Vorplatz': 56,
-                         'OG - BÃ¼ro Jerome': 60,
+                         'OG - Büro Jerome': 60,
                          'OG - Zimmer Nord': 62,
                          'OG - Elternzimmer': 64,
-                         'OG - BÃ¼ro Jasmin': 70,
+                         'OG - Büro Jasmin': 70,
                          'OG - Bad': 72,
                          'OG - Elternbad': 74
                          }
 
-dict_heater_valves = {'UG - WaschkÃ¼che': [4, 0],
+dict_heater_valves = {'UG - Waschküche': [4, 0],
                       'UG - Vorplatz': [4, 1],
                       'EG - WC': [4, 2],
-                      'EG - KÃ¼che': [4, 3],
+                      'EG - Küche': [4, 3],
                       'EG - Wohnen': [4, 4],
                       'OG - Vorplatz': [5, 0],
-                      'OG - BÃ¼ro Jerome': [5, 1],
+                      'OG - Büro Jerome': [5, 1],
                       'OG - Zimmer Nord': [5, 2],
                       'OG - Elternzimmer': [5, 3],
-                      'OG - BÃ¼ro Jasmin': [5, 4],
+                      'OG - Büro Jasmin': [5, 4],
                       'OG - Bad': [5, 5],
                       'OG - Elternbad': [5, 6]
                       }
@@ -42,18 +46,18 @@ heatpump_db_name = 'heatpump'
 heatpump_url = "http://192.168.2.223/Webserver/index.html"
 # TEMPERATUREN: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[00]
 # 01: Vorlauf
-# 02: RÃ¼cklauf
-# 03: RÃ¼cklauf Soll
+# 02: Rücklauf
+# 03: Rücklauf Soll
 # 05: Aussentemperatur
 # 06: Mitteltemperatur
 # 07: Warmwasser-Ist
 # 08: Warmwasser-Soll
-# 09: WÃ¤rmequelle-Ein
+# 09: Wärmequelle-Ein
 temps = [1, 2, 3, 5, 6, 7, 8, 9]
 
-# EINGÃ„NGE: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[01]
+# EINGÄNGE: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[01]
 
-# AUSGÃ„NGE: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[02]
+# AUSGÄNGE: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[02]
 
 # ABLAUFZEITEN: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[03]
 
@@ -77,7 +81,7 @@ eingaenge = [1, 2, 5, 6, 7]
 # 6: Leistung
 anlagestatus = [5, 6]
 
-# WÃ„RMEERZEUGER: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[08]
+# WÄRMEERZEUGER: parsed_html.contents[1].contents[2].contents[5].contents[0].contents[08]
 # 1: Heizung
 # 2: Warmwasser
 # 3: Gesamt
