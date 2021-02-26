@@ -86,11 +86,14 @@ class Heatpump():
         # If so, create new data point "Leistung Heizen" and write value.
         # If it is "Warmwasser", create new data point "Leistung Warmwasser" and write value
         data['Leistung Heizen'] = float(0)
-        data['Leistung WW']  = float(0)
+        data['Leistung WW'] = float(0)
+        data['Leistung Abtauen'] = float(0)
         if data['Betriebszustand'] == 'Heizen':
             data['Leistung Heizen'] = data['Leistung Ist']
         elif data['Betriebszustand'] == 'WW':
             data['Leistung WW'] = data['Leistung Ist']
+        elif data['Betriebszustand'] == 'ABT':
+            data['Leistung Abtauen'] = data['Leistung Ist']
         # remove unused data points from dict
         del data['Leistung Ist']
         del data['Betriebszustand']
